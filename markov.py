@@ -40,9 +40,20 @@ def make_chains(text_string):
         [None]
     """
 
+
+
     chains = {}
 
-    # your code goes here
+    words = text_string.split()
+
+    for index, word in enumerate(words):
+
+        # print(word, index)
+        if index == len(words) - 3:
+            chains[(word, words[index + 1])] = [words[-1]]
+            break
+        chains[(word, words[index + 1])] = chains.get((word, words[index + 1]),[]) + [(words[index + 2])]
+
 
     return chains
 
@@ -64,7 +75,7 @@ input_text = open_and_read_file(input_path)
 
 # Get a Markov chain
 chains = make_chains(input_text)
-
+print(chains)
 # Produce random text
 random_text = make_text(chains)
 
