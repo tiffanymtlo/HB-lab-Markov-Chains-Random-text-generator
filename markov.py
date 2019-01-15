@@ -17,7 +17,7 @@ def open_and_read_file(file_path):
     return file.read()
 
 
-def make_chains(text_string):
+def make_chains(text_string, n_gram):
     """Take input text as string; return dictionary of Markov chains.
 
     A chain will be a key that consists of a tuple of (word1, word2)
@@ -42,26 +42,34 @@ def make_chains(text_string):
         [None]
     """
 
-
-
     chains = {}
 
     words = text_string.split()
 
     for index, word in enumerate(words):
-
+        n_gram_list = []
         # print(word, index)
-        if index == len(words) - 3:
-            chains[(word, words[index + 1])] = [words[-1]]
-            chains[(words[index + 1], words[index + 2])] = None
+        for idx in range(index, index + n_gram):
+            n_gram_list.append(words[idx])
+
+
+        # print('n_gram_list is', n_gram_list)
+        chains_key = tuple(n_gram_list)
+        # print('chains key is', chains_key, 'type is', type(chains_key))
+
+        if index == len(words) - (n_gram + 1):
+            chains[chains_key] = [words[-1]]
+            last_tuple = tuple(words[-n_gram:])
+            chains[last_tuple] = None
             break
-        chains[(word, words[index + 1])] = chains.get((word, words[index + 1]),[]) + [(words[index + 2])]
-
-
+        
+        # print(chains.get(chains_key, []))
+        chains[chains_key] = chains.get(chains_key,[]) + [(words[index + n_gram])]
+    
     return chains
 
 
-def make_text(chains):
+def make_text(chains, n_gram):
     """Return text from chains."""
 
     words = []
@@ -74,7 +82,8 @@ def make_text(chains):
 
     while True:
         try:
-            next_word = choice(chains[(words[index], words[index + 1])])
+            # chains_key = tuple([word for word in words[-n_gram:]])
+            next_word = choice(chains[tuple(words[-n_gram:])])
             words.append(next_word)
             index += 1
 
@@ -87,18 +96,19 @@ def make_text(chains):
 
 
 input_path = "green-eggs.txt"
-input_path2 = sys.argv[1]
+# input_path2 = sys.argv[1]
+input_path3 = 'gettysburg.txt'
 # print(input_path2)
 
 # Open the file and turn it into one long string
-input_text = open_and_read_file(input_path2)
+input_text = open_and_read_file(input_path3)
 # print(input_text)
 
 # Get a Markov chain
-chains = make_chains(input_text)
+chains = make_chains(input_text, 7)
 # print(chains)
 
 # Produce random text
-random_text = make_text(chains)
+random_text = make_text(chains, 7)
 
 print(random_text)
