@@ -63,19 +63,36 @@ def make_text(chains):
 
     words = []
 
-    # your code goes here
+    start_key = choice(list(chains.keys()))
+
+    words.extend(start_key)
+
+    index = 0
+
+    while True:
+        try:
+            next_word = choice(chains[(words[index], words[index + 1])])
+            words.append(next_word)
+            index += 1
+
+        except KeyError:
+            break    
+
+    # print(words)
 
     return " ".join(words)
 
 
 input_path = "green-eggs.txt"
+input_path2 = 'gettysburg.txt'
 
 # Open the file and turn it into one long string
-input_text = open_and_read_file(input_path)
+input_text = open_and_read_file(input_path2)
 
 # Get a Markov chain
 chains = make_chains(input_text)
-print(chains)
+# print(chains)
+
 # Produce random text
 random_text = make_text(chains)
 
