@@ -5,16 +5,17 @@ import sys
 
 
 
-def open_and_read_file(file_path):
+def open_and_read_file(file_path1, file_path2):
     """Take file path as string; return text as string.
 
     Takes a string that is a file path, opens the file, and turns
     the file's contents as one string of text.
     """
 
-    file = open(file_path)
+    file1 = open(file_path1)
+    file2 = open(file_path2)
 
-    return file.read()
+    return file1.read() + "\n" + file2.read()
 
 
 def make_chains(text_string, n_gram):
@@ -74,11 +75,15 @@ def make_text(chains, n_gram):
 
     words = []
 
-    start_key = choice(list(chains.keys()))
+    while True:
+        start_key = choice(list(chains.keys()))
+        if start_key[0][0].isupper():
+            break
 
     words.extend(start_key)
 
     index = 0
+    # ending_punctuation = '.!?'
 
     while True:
         try:
@@ -96,19 +101,19 @@ def make_text(chains, n_gram):
 
 
 input_path = "green-eggs.txt"
-# input_path2 = sys.argv[1]
+input_path2 = 'lyrics_swift.txt'
 input_path3 = 'gettysburg.txt'
 # print(input_path2)
 
 # Open the file and turn it into one long string
-input_text = open_and_read_file(input_path3)
+input_text = open_and_read_file(input_path, input_path3)
 # print(input_text)
 
 # Get a Markov chain
-chains = make_chains(input_text, 7)
+chains = make_chains(input_text, 2)
 # print(chains)
 
 # Produce random text
-random_text = make_text(chains, 7)
+random_text = make_text(chains, 2)
 
 print(random_text)
